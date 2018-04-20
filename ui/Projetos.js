@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router'
 
 import SideBar from '../components/SideBar'
 
-export default class Sobre extends Component{
+export default class Projetos extends Component{
     render(){
         return(
             <div>
                 <SideBar/>
-                <h1>Sobre</h1>
+                <Link to="/projetos/galeria">Projeto</Link>
             </div>
         )
     }

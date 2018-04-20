@@ -2,8 +2,6 @@ import React, { Component } from 'react'
 import FileUploader from 'react-firebase-file-uploader'
 import { firebaseApp } from '../firebase/Firebase'
 
-import SideBar from '../components/SideBar'
-
 export default class Contagem extends Component {
     constructor(){
         super()
@@ -74,7 +72,6 @@ export default class Contagem extends Component {
     render() {
         return (
             <div>
-                <SideBar/>
                 <div className="calcular-container">
                         {this.state.isUploading &&
                             <progress>{this.state.progress}</progress>
