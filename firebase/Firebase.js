@@ -1,4 +1,5 @@
 import * as firebase from 'firebase'
+import Rebase from 're-base'
 
 const config = {
   apiKey: "AIzaSyC_nxPOvIhTV-oYAjxNVMf8CId6fFpbMEg",
@@ -11,10 +12,16 @@ const config = {
 
 const firebaseApp = firebase.initializeApp(config);
 
+const base = Rebase.createClass(firebaseApp.database())
+
 const ref = firebase.database().ref();
 
-const addCadastro = ( pasta, objeto ) => {
+const addCadastro = (pasta, objeto) => {
   ref.child(pasta).push(objeto);
 }
 
-export { firebaseApp, addCadastro, ref as default };
+const storage = firebase.storage();
+var storageRef = storage.ref('images/');
+
+
+export { firebaseApp, addCadastro, base, storage, storageRef, ref as default };

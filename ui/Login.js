@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import * as firebase from 'firebase'
-import { firebaseApp, addCadastro } from '../firebase/Firebase'
+import { firebaseApp } from '../firebase/Firebase'
 import Lock from '../imgs/lock.svg'
 import EmailIcon from '../imgs/email.svg'
 import './Login.css'
@@ -21,9 +21,12 @@ export default class Login extends Component {
         // BIND
 
         this.state = {
-            nome: "",
-            email: ""
+            email: "",
+            uid: ""
+            // handle: this.handleSave
         }
+        localStorage.clear();
+
     }
 
     // METODO QUE TRATA A MUDANÇA DE DADOS NOS INPUTS
@@ -44,14 +47,14 @@ export default class Login extends Component {
         e.preventDefault();
         firebaseApp.auth().signInWithEmailAndPassword(this.refs.email.value, this.refs.password.value).then(signedUser => {
             this.setState({
-                user: signedUser
+                user: signedUser,
+                uid: signedUser.uid
             })
         }).catch(function (error) {
             var errorCode = error.code;
             var errorMessage = error.message;
             console.log(errorCode, errorMessage);
         });
-
     }
 
 
@@ -79,7 +82,8 @@ export default class Login extends Component {
         firebaseApp.auth().createUserWithEmailAndPassword(this.refs.email.value, this.refs.password.value)
             .then(signedUser => {
                 this.setState({
-                    user: signedUser
+                    user: signedUser,
+                    email: this.refs.email.value
                 }
                 );
             }).catch(function (error) {
@@ -88,11 +92,18 @@ export default class Login extends Component {
 
                 console.log(errorCode, errorMessage);
             });
-        addCadastro("usuario", this.state);
+
+        // const email = this.refs.email.value
+        // base.push('usuario/', {
+        //     data: {
+        //         email
+        //     }
+        // }).then(() => {
+        //     console.log("inserido com sucesso")
+        // })
     }
 
-
-
+    
     render() {
         return (
             <div className="main-container">
@@ -108,14 +119,14 @@ export default class Login extends Component {
 
                             <div className="input-group">
                                 <div className="input-group-prepend">
-                                    <span className="input-group-text" id="basic-addon1"><img id="img-email" src={EmailIcon} alt="emailicon"/></span>
+                                    <span className="input-group-text" id="basic-addon1"><img id="img-email" src={EmailIcon} alt="emailicon" /></span>
                                 </div>
                                 <input name="email" ref="email" type="email" className="form-control" placeholder="Endereço de e-mail" aria-label="E-mail" aria-describedby="basic-addon1" />
                             </div>
 
                             <div className="input-group">
                                 <div className="input-group-prepend">
-                                    <span className="input-group-text" id="basic-addon2"><img src={Lock} id="img-lock" alt="lock"/></span>
+                                    <span className="input-group-text" id="basic-addon2"><img src={Lock} id="img-lock" alt="lock" /></span>
                                 </div>
                                 <input name="password" ref="password" type="password" className="form-control" placeholder="Senha" aria-label="Senha" aria-describedby="basic-addon2" />
                             </div>
@@ -129,21 +140,21 @@ export default class Login extends Component {
 
                             <div id="botoes">
                                 <div className="btn-group">
-                                    <button type="submit" id="btn-login" onClick={this.authenticate} className="btn btn-outline-secondary">Entrar</button>
-                                    
+                                    <button type="submit" id="btn" onClick={this.authenticate} className="btn btn-outline-secondary">Entrar</button>
+
                                     <div className="btn-group">
-                                        <a className="btn btn-outline-secondary" id="btn-login" onClick={this.authenticateWithGoogleAccount}>Google</a>
+                                        <a className="btn btn-outline-secondary" id="btn" onClick={this.authenticateWithGoogleAccount}>Google</a>
                                     </div>
 
                                     <div className="btn-group">
-                                        <button type="submit" id="btn-cadastro" onClick={this.create} className="btn btn-outline-secondary">Cadastrar</button>
+                                        <button type="submit" id="btn" onClick={this.create} className="btn btn-outline-secondary">Cadastrar</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </form>
 
-                </section> 
+                </section>
                 {/* FIM SESSAO LOGIN E CADASTRO  */}
 
             </div>

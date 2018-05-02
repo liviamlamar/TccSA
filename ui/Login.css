@@ -32,9 +32,11 @@ html {
       display: flex;
       flex-direction: column;
       align-items: center;
+      
     }
   
     .quadro-login{
+      box-sizing: border-box;
       border: solid 2px #fff;
       display: flex;
       flex-direction: column;
@@ -48,11 +50,11 @@ html {
        -moz-opacity: 0.80;
        filter: alpha(opacity=80);
       border-radius: 10px;
-      box-sizing: border-box;
     }
   
     .quadro-login #title{
-      margin: 10px;
+      margin-top: 30px;
+      margin-bottom: 0;
     }
   
     input,
@@ -70,9 +72,10 @@ html {
   
     .remember-forgot {
       align-items: stretch;
+      margin-top: 5px;
       margin-bottom: 30px;
       margin-left: auto;
-      margin-right: 50px;
+      margin-right: 27px;
     }
   
     .forgot {
@@ -89,8 +92,8 @@ html {
     }
   
     .input-group {
-      margin: 10px 0;
       width: 350px;
+      margin: 0;
     }
   
     #title{
@@ -101,26 +104,18 @@ html {
       font-size: 0.7em;
     }
   
-    #botoes{
+    .btn-group{
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-  
-    #btn-login{
+
+    #btn{
       box-sizing: border-box;
-      width: 100px;
+      width: 400px;
       height: 40px;
-      border-radius: 50px;
-      margin-left: 20px;
-    }
-  
-    #btn-cadastro{
-      box-sizing: border-box;
-      width: 100px;
-      height: 40px;
-      border-radius: 50px;
-      margin-left: 20px;
+      border-radius: 10px;
+      margin-bottom: 10px;
     }
   
   }
@@ -137,20 +132,20 @@ html {
     }
   
     .quadro-login{
+      box-sizing: border-box;
       border: solid 2px #fff;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      width: 300px;
-      height: 340px;
-      margin: 50px auto 0;
+      width: 400px;
+      height: 350px;
+      margin: 90px auto 0;
       background-color: #fff;
       opacity:0.80;
         -moz-opacity: 0.80;
         filter: alpha(opacity=80);
-      border-radius: 50px;
-      box-sizing: border-box;
+      border-radius: 10px;
     }
   
     .quadro-login #title{
@@ -199,37 +194,19 @@ html {
       line-height: 20px;
     }
   
-    #botoes{
+    .btn-group{
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
     }
-  
-    #btn-login{
+
+    #btn{
       box-sizing: border-box;
-      margin-top: 10px;
-      margin-bottom: 10px;
-      border-radius: 50px 0 0 50px ;
-      width: 80px;
+      width: 350px;
       height: 35px;
-    }
-  
-    #btn-option{
-      box-sizing: border-box;
-      margin-top: 10px;
       margin-bottom: 10px;
-      border-radius: 0 50px 50px 0;
-      height: 35px;
-      margin-right: 10px;
-    }
-  
-    #btn-cadastro{
-      box-sizing: border-box;
-      width: 110px;
-      height: 35px;
-      margin-top: 10px;
+      border-radius: 10px;
       margin-bottom: 10px;
-      border-radius: 50px;
-      margin-left: 10px;
+      
     }
   
   }
