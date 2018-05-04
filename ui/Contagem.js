@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import FileUploader from 'react-firebase-file-uploader'
 import firebase from 'firebase'
 import { firebaseApp, base } from '../firebase/Firebase'
+import {idProjeto}  from '../ui/Projetos'
 // import Test from '../components/Test'
 
 const style = {
@@ -18,6 +19,8 @@ const style = {
         filter: "alpha(opacity=80)"
     }
 }
+
+var uid = null
 
 export default class Contagem extends Component {
     constructor() {
@@ -42,6 +45,12 @@ export default class Contagem extends Component {
         fotoURL: ''
     };
 
+    componentDidMount() {
+        firebaseApp.auth().onAuthStateChanged((signedUser) => {
+            uid = signedUser.uid
+        }
+    )
+}
 
     contagemEstomatos(event) {
         event.preventDefault();
@@ -88,16 +97,10 @@ export default class Contagem extends Component {
     }
     handleUploadSuccess = (filename) => {
         this.setState({ foto: filename, progress: 100, isUploading: false });
-        firebaseApp.storage().ref('images').child(filename).getDownloadURL().then(url => this.setState({ fotoURL: url }));
-        var user = firebase.auth().currentUser;
-        var uid;
-
-        if (user != null) {
-            uid = user.uid;
-        }
+        firebaseApp.storage().ref('/imagens').child(filename).getDownloadURL().then(url => this.setState({ fotoURL: url }));
 
         const foto = this.state.foto
-        base.push(uid + '/imagens', {
+        base.push(uid +'/'+ idProjeto + '/imagens', {
             data: {
                 foto
             }
@@ -127,7 +130,7 @@ export default class Contagem extends Component {
                         id="botaoFoto"
                         name="foto"
                         randomizeFilename
-                        storageRef={firebaseApp.storage().ref('images')}
+                        storageRef={firebaseApp.storage().ref('/imagens')}
                         onUploadStart={this.handleUploadStart}
                         onUploadError={this.handleUploadError}
                         onUploadSuccess={this.handleUploadSuccess}

@@ -21,7 +21,6 @@ const addCadastro = (pasta, objeto) => {
 }
 
 const storage = firebase.storage();
-var storageRef = storage.ref('images/');
 
 
-export { firebaseApp, addCadastro, base, storage, storageRef, ref as default };
+export { firebaseApp, addCadastro, base, storage, ref as default };

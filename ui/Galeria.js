@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
-import { firebaseApp, base, storageRef } from '../firebase/Firebase'
+import { firebaseApp, base, storage } from '../firebase/Firebase'
+import { idProjeto } from '../ui/Projetos'
+
+var uid = null
 
 export default class Galeria extends Component {
     constructor(props) {
@@ -7,17 +10,17 @@ export default class Galeria extends Component {
 
         this.state = {
             fotos: {},
-            url: null
+            url: {}
         }
 
         this.listItem = this.listItem.bind(this)
     }
     componentDidMount() {
         firebaseApp.auth().onAuthStateChanged((signedUser) => {
-            var uid = signedUser.uid
+            uid = signedUser.uid
             var uidString = String(uid)
-
-            base.syncState(uidString + '/imagens', {
+            var keyString = String(idProjeto)
+            base.syncState(uidString + '/' + keyString + '/imagens', {
                 context: this,
                 state: 'fotos',
                 asArray: false
@@ -26,25 +29,20 @@ export default class Galeria extends Component {
     }
 
     listItem(key, foto) {
-        storageRef.child('images/' + foto.foto).getDownloadURL().then(function (url) {
-            var xhr = new XMLHttpRequest();
-            xhr.responseType = 'blob';
-            xhr.onload = function (event) {
-                var blob = xhr.response;
-            };
-            xhr.open('GET', url);
-            xhr.send();
-            this.setState({
-                url: url
+        firebaseApp.storage().ref('/imagens').child(foto.foto).getDownloadURL()
+            .then(url => this.setState({
+                url: {
+                    url
+                }
             })
-        }).catch(function (error) {
-            // Handle any errors
-        });
+            );
+
+
         return (
             <div key={key} className="card" style={{ width: "18rem" }}>
                 <div className="card-body">
-                    <h5 className="card-title">{foto.foto}</h5>
-                    <img src={this.state.url} alt='imagem'/>
+                <p>{key}</p>
+                    <img src={this.state.url} alt='imagem' style={{width: "16rem"}}/>
                 </div>
             </div>
         )

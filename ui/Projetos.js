@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router'
-// import { Router, Route, browserHistory } from 'react-router'
 import { base, firebaseApp } from '../firebase/Firebase'
-import firebase from 'firebase'
-// import Galeria from '../ui/Galeria'
-// import Card from '../components/Card'
+
+var idProjeto = null
+var uid = null
 
 export default class Projetos extends Component {
     constructor(props) {
@@ -12,19 +11,19 @@ export default class Projetos extends Component {
 
         this.state = {
             projetos: {},
-            key: null,
-            projeto: ""
+            key: null
         }
 
         this.listItem = this.listItem.bind(this)
         this.handleRemove = this.handleRemove.bind(this)
         this.handleSave = this.handleSave.bind(this)
         this.getThisItem = this.getThisItem.bind(this)
+        this.openProject = this.openProject.bind(this)
     }
 
     componentDidMount() {
         firebaseApp.auth().onAuthStateChanged((signedUser) => {
-            var uid = signedUser.uid
+            uid = signedUser.uid
             var uidString = String(uid)
 
             base.syncState(uidString, {
@@ -36,12 +35,6 @@ export default class Projetos extends Component {
     }
 
     handleRemove(key) {
-        var user = firebase.auth().currentUser;
-        var uid;
-
-        if (user != null) {
-            uid = user.uid;
-        }
         base.remove(uid + '/' + key)
             .then(() => {
                 console.log('sucesso')
@@ -53,20 +46,16 @@ export default class Projetos extends Component {
 
     listItem(key, projeto) {
         console.log(key, projeto)
-        // {
-        //     <Router history={browserHistory}>
-        //         <Route path={projeto.link} component={Galeria} />
-        //     </Router>
-        // }
         return (
             <div key={key} className="card" style={{ width: "18rem" }}>
                 {/* <img className="card-img-top" src=".../100px180/" alt="Card image cap" /> */}
                 <div className="card-body">
                     <h5 className="card-title">{projeto.nome}</h5>
                     <p className="card-text">{projeto.descricao}</p>
-                    <button type="button" className="btn btn-primary" oncClick={() => this.openProject(key)}> Ver </button>
+                    {/* <button type="button" className="btn btn-primary" oncClick={() => this.openProject()}>Ver</button> */}
                     <button type="button" className="btn btn-primary" onClick={() => this.handleRemove(key)}>Excluir</button>
                     <button type="button" className="btn btn-primary" data-toggle="modal" onClick={() => this.getThisItem(key)} data-target="#exampleModal">Editar</button>
+                    <Link to='/projetos/galeria' onClick={() => this.openProject(key)}>Visualizar</Link>
                 </div>
             </div>
         )
@@ -85,22 +74,14 @@ export default class Projetos extends Component {
     handleSave(event, key) {
         event.preventDefault()
 
-        var user = firebase.auth().currentUser;
-        var uid;
-        if (user != null) {
-            uid = user.uid;
-        }
-
         const nome = this.nome.value
         const descricao = this.descricao.value
-        const link = '/projetos/' + this.nome.value + '/galeria'
 
         this.state.key ?
             base.update(uid + '/' + this.state.key, {
                 data: {
                     nome,
-                    descricao,
-                    link
+                    descricao
                 }
             }).then(() => {
                 this.setState({
@@ -113,8 +94,7 @@ export default class Projetos extends Component {
             base.push(uid, {
                 data: {
                     nome,
-                    descricao,
-                    link
+                    descricao
                 }
             }).then(() => {
                 console.log(key, this.state.key)
@@ -125,15 +105,8 @@ export default class Projetos extends Component {
         this.descricao.value = ''
     }
 
-    openProject(key){
-        this.nome.value = this.state.projetos[key].nome
-        this.descricao.value = this.state.projetos[key].descricao
-        return(
-            <div>
-                <h1>{this.nome.value}</h1>
-                <h3>{this.descricao.value}</h3>
-            </div>
-        )
+    openProject(key) {
+        idProjeto = key
     }
 
     render() {
@@ -142,11 +115,9 @@ export default class Projetos extends Component {
             <div>
                 <div>
                     <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Criar Projeto</button>
-                    <Link to="/projetos/galeria">Projeto</Link>
                     {Object
                         .keys(this.state.projetos)
                         .map(key => this.listItem(key, this.state.projetos[key]))}
-
                 </div>
 
 
@@ -185,3 +156,5 @@ export default class Projetos extends Component {
         )
     }
 }
+
+export { idProjeto }
