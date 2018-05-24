@@ -1,4 +1,19 @@
-.calcular-container{
-    width: 100vh;
-    height: 100vh;
-}
+/* .margin{
+  margin-left: 44px;
+} */
+
+.container-foto {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin-left: 44px;
+  }
+  
+  .container-foto img {
+    position: inherit;
+    top: inherit;
+    left: inherit;
+    width: inherit;
+  }

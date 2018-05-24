@@ -10,6 +10,7 @@ export default class Forgot extends Component {
     constructor() {
         super();
         this.handleChange = this.handleChange.bind(this);
+        this.resetPassword = this.resetPassword.bind(this)
 
         this.state = {
             email: ""
@@ -33,9 +34,7 @@ export default class Forgot extends Component {
     resetPassword(event) {
         event.preventDefault();
         var auth = firebaseApp.auth();
-        
-
-        auth.sendPasswordResetEmail(emailAddress).then(function () {
+        auth.sendPasswordResetEmail(this.refs.email.value).then(function () {
             console.log("reset email enviado")
         }).catch(function (error) {
             console.log(error)
@@ -52,17 +51,17 @@ export default class Forgot extends Component {
             <div className="reset-container">
                 <header id="logo"></header>
                 <section id="recuperarAcesso">
-                    <form id="reset" onSubmit={this.resetPassword}>
+                    <form id="reset" >
                         <div className="quadro-reset">
                             <h4>Podemos redefinir sua senha, só precisamos do seu endereço de e-mail:</h4>
                             <div className="input-group">
                                 <div className="input-group-prepend">
                                     <span className="input-group-text" id="basic-addon1"><img src={EmailIcon} alt="emailicon" id="img-email"/></span>
                                 </div>
-                                <input id="input" name="email" ref="email" type="email" className="form-control" placeholder="E-mail" value={this.state.email} onChange={this.handleChange} aria-label="E-mail" aria-describedby="basic-addon1" />
+                                <input id="input" name="email" ref="email" type="email" className="form-control" placeholder="E-mail" onChange={this.handleChange} aria-label="E-mail" aria-describedby="basic-addon1" />
                             </div>
-                            <button type="submit" id="btn-reset" className="btn btn-outline-secondary">Redefinir</button>
-                            <button type="submit" id="btn-reset" className="btn btn-outline-secondary" onClick={this.voltar}>Voltar</button>
+                            <button type="button" id="btn-reset" onClick={this.resetPassword} className="btn btn-outline-secondary">Redefinir</button>
+                            <button type="button" id="btn-reset" className="btn btn-outline-secondary" onClick={this.voltar}>Voltar</button>
                         </div>
                     </form>
                 </section>

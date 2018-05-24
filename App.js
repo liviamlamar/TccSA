@@ -7,7 +7,7 @@ import SideBar from './components/SideBar'
 class App extends Component {
   render() {
     return (
-      <div className="container text-center">
+      <div className="text-center">
       <SideBar/>
       <div className="main-content">
         {this.props.children}     

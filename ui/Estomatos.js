@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import './Estomatos.css'
+import './Texto.css'
 
 import Estomatosimg from '../imgs/figura1-estomatos.jpg'
 

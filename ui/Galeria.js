@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { firebaseApp, base, storage } from '../firebase/Firebase'
+import { firebaseApp, storage, base } from '../firebase/Firebase'
 import { idProjeto } from '../ui/Projetos'
 
 var uid = null
@@ -10,11 +10,16 @@ export default class Galeria extends Component {
 
         this.state = {
             fotos: {},
-            url: {}
+            urlVetor: [],
+            url: ''
         }
 
         this.listItem = this.listItem.bind(this)
     }
+
+
+
+
     componentDidMount() {
         firebaseApp.auth().onAuthStateChanged((signedUser) => {
             uid = signedUser.uid
@@ -23,36 +28,90 @@ export default class Galeria extends Component {
             base.syncState(uidString + '/' + keyString + '/imagens', {
                 context: this,
                 state: 'fotos',
-                asArray: false
+                asArray: true
             })
         })
     }
 
-    listItem(key, foto) {
-        firebaseApp.storage().ref('/imagens').child(foto.foto).getDownloadURL()
-            .then(url => this.setState({
-                url: {
-                    url
-                }
-            })
-            );
-
-
-        return (
-            <div key={key} className="card" style={{ width: "18rem" }}>
-                <div className="card-body">
-                <p>{key}</p>
-                    <img src={this.state.url} alt='imagem' style={{width: "16rem"}}/>
+    listItem(key, fotos) {
+        console.log(fotos.foto)
+        var url;
+        storage.child(`imagens/${fotos.foto}`).putString(`data_url`).then((snapshot) => {
+            console.log('Uploaded a data_url string!');
+            url = snapshot.downloadURL;
+            console.log(url)
+            return (
+                <div className="col-mb-3" style={{ marginRight: '10px' }}>
+                    <div key={key} className="card" style={{ maxWidth: "18rem", marginBottom: "10px" }}>
+                        <div className="card-body">
+                            <img src={url} alt='imagem' style={{ width: "16rem" }} />
+                        </div>
+                    </div>
                 </div>
-            </div>
-        )
+            )
+        });
+
+       
+        
     }
+
+
+    
+        // console.log(fotos.foto)
+        // firebaseApp.storage().ref('/imagens').child(fotos.foto).getDownloadURL()
+        //     .then(url => this.setState({
+        //         url
+        //     })
+        //     );
+        //     this.state.urlVetor.push(this.state.url)
+
+
+        //    storage.child(`imagens/${fotos.foto}`).getDownloadURL()
+        //         .then( url => {
+        //             console.log(url)
+        //             return (
+        //                 <div className="col-mb-3" style={{marginRight:'10px'}}>
+        //                 <div key={key} className="card" style={{ maxWidth: "18rem", marginBottom:"10px" }}>
+        //                     <div className="card-body">
+        //                         <img src={url} alt='imagem' style={{width: "16rem"}}/>
+        //                     </div>
+        //                 </div>
+        //                 </div>
+        //             )
+        //         } )
+
+        // storage.child(`imagens/${fotos.foto}`).getDownloadURL()
+        // .then( url => this.setState({url}))
+        // return (
+        //     <div className="col-mb-3" style={{marginRight:'10px'}}>
+        //     <div key={key} className="card" style={{ maxWidth: "18rem", marginBottom:"10px" }}>
+        //         <div className="card-body">
+        //             <img src={this.state.url} alt='imagem' style={{width: "16rem"}}/>
+        //         </div>
+        //     </div>
+        //     </div>
+        // )
+
+
+        // return (
+        //     <div className="col-mb-3" style={{ marginRight: '10px' }}>
+        //         <div key={key} className="card" style={{ maxWidth: "18rem", marginBottom: "10px" }}>
+        //             <div className="card-body">
+        //                 <img src={snapshot.downloadURL} alt='imagem' style={{ width: "16rem" }} />
+        //             </div>
+        //         </div>
+        //     </div>
+        // )
+        //add it to firestore
+
+
+    //}
 
     render() {
         return (
             <div className="galeria">
                 <h1>Galeria</h1>
-                <div className="imagens">
+                <div className="imagens row" style={{ marginLeft: '45px' }}>
                     {Object
                         .keys(this.state.fotos)
                         .map(key => this.listItem(key, this.state.fotos[key]))}

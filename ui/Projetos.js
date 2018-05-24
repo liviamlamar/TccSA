@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router'
+import { browserHistory } from 'react-router'
 import { base, firebaseApp } from '../firebase/Firebase'
 
 var idProjeto = null
@@ -47,16 +47,16 @@ export default class Projetos extends Component {
     listItem(key, projeto) {
         console.log(key, projeto)
         return (
-            <div key={key} className="card" style={{ width: "18rem" }}>
-                {/* <img className="card-img-top" src=".../100px180/" alt="Card image cap" /> */}
+            <div className="col-mb-4" style={{marginRight:"10px"}}>
+            <div key={key} className="card" style={{ maxWidth: "18rem", marginBottom:"10px" }}>
                 <div className="card-body">
                     <h5 className="card-title">{projeto.nome}</h5>
                     <p className="card-text">{projeto.descricao}</p>
-                    {/* <button type="button" className="btn btn-primary" oncClick={() => this.openProject()}>Ver</button> */}
+                    <button type="button" className="btn btn-primary" style={{marginRight:"5px"}} onClick={() => this.openProject(key)}>Visualizar</button>
+                    <button type="button" className="btn btn-primary" data-toggle="modal"  style={{marginRight:"5px"}} onClick={() => this.getThisItem(key)} data-target="#exampleModal">Editar</button>
                     <button type="button" className="btn btn-primary" onClick={() => this.handleRemove(key)}>Excluir</button>
-                    <button type="button" className="btn btn-primary" data-toggle="modal" onClick={() => this.getThisItem(key)} data-target="#exampleModal">Editar</button>
-                    <Link to='/projetos/galeria' onClick={() => this.openProject(key)}>Visualizar</Link>
                 </div>
+            </div>
             </div>
         )
     }
@@ -107,6 +107,7 @@ export default class Projetos extends Component {
 
     openProject(key) {
         idProjeto = key
+        browserHistory.push('/projetos/galeria')
     }
 
     render() {
@@ -114,10 +115,12 @@ export default class Projetos extends Component {
         return (
             <div>
                 <div>
-                    <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Criar Projeto</button>
+                    <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModal" style={{marginTop:"10px", marginBottom:"15px"}}>Criar Projeto</button>
+                    <div className="row" style={{justifyContent:"center"}}>
                     {Object
                         .keys(this.state.projetos)
                         .map(key => this.listItem(key, this.state.projetos[key]))}
+                    </div>
                 </div>
 
 
@@ -134,11 +137,11 @@ export default class Projetos extends Component {
                                 <form>
                                     <div className="form-group">
                                         <label htmlFor="nome" className="col-form-label">Nome:</label>
-                                        <input ref={ref => this.nome = ref} type="text" className="form-control" id="nome" />
+                                        <input ref={ref => this.nome = ref} type="text" className="form-control" id="nome"  required={true}/>
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="descricao" className="col-form-label">Descrição:</label>
-                                        <textarea ref={ref => this.descricao = ref} className="form-control" id="descricao"></textarea>
+                                        <textarea ref={ref => this.descricao = ref} className="form-control" id="descricao" required={true}></textarea>
                                     </div>
                                 </form>
                             </div>

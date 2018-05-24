@@ -110,7 +110,7 @@ html {
       align-items: center;
     }
 
-    #btn{
+    #btn, #btn-entrar, #btn-cadastrar{
       box-sizing: border-box;
       width: 400px;
       height: 40px;
@@ -199,7 +199,7 @@ html {
       flex-direction: column;
     }
 
-    #btn{
+    #btn, #btn-entrar, #btn-cadastrar{
       box-sizing: border-box;
       width: 350px;
       height: 35px;

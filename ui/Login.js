@@ -140,14 +140,14 @@ export default class Login extends Component {
 
                             <div id="botoes">
                                 <div className="btn-group">
-                                    <button type="submit" id="btn" onClick={this.authenticate} className="btn btn-outline-secondary">Entrar</button>
+                                    <button type="submit" id="btn-entrar" onClick={this.authenticate} className="btn btn-outline-secondary">Entrar</button>
 
                                     <div className="btn-group">
                                         <a className="btn btn-outline-secondary" id="btn" onClick={this.authenticateWithGoogleAccount}>Google</a>
                                     </div>
 
                                     <div className="btn-group">
-                                        <button type="submit" id="btn" onClick={this.create} className="btn btn-outline-secondary">Cadastrar</button>
+                                        <button type="submit" id="btn-cadastrar" onClick={this.create} className="btn btn-outline-secondary">Cadastrar</button>
                                     </div>
                                 </div>
                             </div>
