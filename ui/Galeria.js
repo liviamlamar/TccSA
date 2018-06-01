@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { firebaseApp, storage, base } from '../firebase/Firebase'
 import { idProjeto } from '../ui/Projetos'
+import Card from '../components/Card'
 
 var uid = null
 
@@ -41,13 +42,7 @@ export default class Galeria extends Component {
             url = snapshot.downloadURL;
             console.log(url)
             return (
-                <div className="col-mb-3" style={{ marginRight: '10px' }}>
-                    <div key={key} className="card" style={{ maxWidth: "18rem", marginBottom: "10px" }}>
-                        <div className="card-body">
-                            <img src={url} alt='imagem' style={{ width: "16rem" }} />
-                        </div>
-                    </div>
-                </div>
+                <Card key={key} url={url}/>
             )
         });
 

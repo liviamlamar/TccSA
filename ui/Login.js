@@ -103,7 +103,7 @@ export default class Login extends Component {
         // })
     }
 
-    
+
     render() {
         return (
             <div className="main-container">
@@ -137,6 +137,12 @@ export default class Login extends Component {
                                     <a className="reset" href="/reset">Esqueceu a senha?</a>
                                 </div>
                             </div>
+
+                            {/* <div id="recaptcha-box">
+                                <form action="" method="get">
+                                    <div className="g-recaptcha" data-sitekey="6Lc3zFsUAAAAABV3k96g3xOthug8--QAcF3xoi9a"></div>
+                                </form>
+                            </div> */}
 
                             <div id="botoes">
                                 <div className="btn-group">

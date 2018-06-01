@@ -25,24 +25,25 @@ const style = {
 var uid = null
 
 export default class Contagem extends Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
+
+        this.pin = 0
 
         this.state = {
+            marcadores: [], // Array onde serão guardados os estados de cada marcado (posição no eixo X, posição no eixo Y, contador, display)
+            counter: 0,
+            containerWidth: 0,
+            containerHeight: 0,
             numeroEstomatos: 0,
             numeroCelulasEp: 0,
             resultado: 0,
-            densidade: 0,
-            posX: 0,
-            posY: 0,
-            display: 'none',
-            counter: 0,
-            containerWidth: 0,
-            containerHeight: 0
+            densidade: 0
         }
+
         this.contagemEstomatos = this.contagemEstomatos.bind(this)
         this.contagemEpidermicas = this.contagemEpidermicas.bind(this)
-        this.calcular = this.calcular.bind(this)
+        this.calcularIndice = this.calcularIndice.bind(this)
         this.calcularDensidade = this.calcularDensidade.bind(this)
         this.handlePosition = this.handlePosition.bind(this)
     }
@@ -55,26 +56,12 @@ export default class Contagem extends Component {
     };
 
     componentDidMount = () => {
-        window.addEventListener("resize", this.handlePosition)
+        // window.addEventListener("resize", this.handlePosition)
         firebaseApp.auth().onAuthStateChanged((signedUser) => {
             uid = signedUser.uid
         }
         )
     }
-
-    // handleClickContainer = (e) => {
-    //     const offW = this.pin.offsetWidth || 29
-    //     const offY = this.pin.offsetHeight || 29
-
-    //     this.setState({
-    //         posX: e.clientX - (offW / 2),
-    //         posY: e.clientY - (offY / 2),
-    //         display: 'block',
-    //         counter: this.state.counter + 1,
-    //         containerWidth: this.container.offsetWidth,
-    //         containerHeight: this.img.offsetHeight
-    //     })
-    // }
 
     handlePosition = () => {
         const w = (this.img.offsetWidth - this.state.containerWidth) / 3 || 0
@@ -90,32 +77,46 @@ export default class Contagem extends Component {
         })
     }
 
+    mostrarPin = ( key_marcador ) => {
+        return (
+          <Pin 
+            refValue={ ref => this.pin = ref } 
+            counter={ this.state.marcadores[key_marcador].counter } 
+            posX={`${ this.state.marcadores[key_marcador].posX }px`} 
+            posY={`${ this.state.marcadores[key_marcador].posY }px`} 
+            display={ this.state.marcadores[key_marcador].display } />
+        )
+      }
+
     contagemEstomatos = (e) => {
         e.preventDefault();
         console.log("estomatos")
 
-       
-            const offW = this.pin.offsetWidth || 29
-            const offY = this.pin.offsetHeight || 29
-    
-            this.setState({
-                posX: e.clientX - (offW / 2),
-                posY: e.clientY - (offY / 2),
-                display: 'block',
-                counter: this.state.numeroEstomatos + 1,
-                containerWidth: this.container.offsetWidth,
-                containerHeight: this.img.offsetHeight,
-                numeroEstomatos: this.state.numeroEstomatos + 1
-            })
+        const offW = this.pin.offsetWidth || 29
+        const offY = this.pin.offsetHeight || 29
+        // A cada clique na imagem um objeto é gerado com os dados abaixo relacionados
+        const marcador = {
+            posX: (e.clientX - (offW / 2)) - 41,
+            posY: (e.clientY - (offY / 2)) - 5,
+            counter: this.state.numeroEstomatos + 1,
+            display: 'block',
+            // containerWidth: this.container.offsetWidth,
+            // containerHeight: this.img.offsetHeight,
+        }
 
-            base.push(uid + '/' + idProjeto + '/dadosContagem', {
-                data: { estomato: this.state.counter, 
-                    posX: this.state.posX, 
-                    posY: this.state.posY, 
-                    containerWidth: this.state.containerWidth, 
-                    containerHeight: this.state.containerHeight, 
-                    numeroEstomatos: this.state.numeroEstomatos } } )
-        
+        // Altero o estado do array macadores acrescentando o novo objeto e atualizo o contador.
+        this.setState({
+            counter: this.state.counter + 1,
+            marcadores: [...this.state.marcadores, marcador],
+            // counter: this.state.numeroEstomatos + 1,
+            numeroEstomatos: this.state.numeroEstomatos + 1
+        })
+
+        // base.push(uid + '/' + idProjeto  + '/imagens/' + this.state.key + '/dadosContagem', {
+        //     data: { estomato: this.state.counter, 
+        //         posicoes: this.state.posicoesEstomatos,
+        //         numeroEstomatos: this.state.numeroEstomatos } } )
+
         // this.setState({
         //     posX: event.pageX,
         //     posY: event.pageY
@@ -133,11 +134,12 @@ export default class Contagem extends Component {
         // ctx.arc(x, y, 10, 0, 2 * Math.PI);
         // ctx.stroke();
 
-
         // this.setState({
-            
+
         // })
-        this.calcular()
+        this.calcularIndice()
+        //     return( <Pin refValue={ref => this.pin = ref} counter={this.state.counter} posX={`${this.state.posX}px`} posY={`${this.state.posY}px`} display={this.state.display} />
+        // )
         // return(
         //     <Test letra="E" style={{x:x, y:y, color:"black", fontSize:"14px"}}/>
         // ) 
@@ -145,46 +147,52 @@ export default class Contagem extends Component {
         // return(
         //     <Pin X = {x} Y={y}/>
         // )
+        // return(<Pin refValue={ref => this.pin = ref} posX={`${this.state.posX}px`} posY={`${this.state.posY}px`} display={this.state.display} />)
     }
 
     contagemEpidermicas = (e) => {
         e.preventDefault();
         console.log("celulas ep")
-        // var x = event.clientX;
-        // var y = event.clientY;
-        // alert("x " + x + ", y " + y);
-
         const offW = this.pin.offsetWidth || 29
         const offY = this.pin.offsetHeight || 29
-
-        this.setState({
-            posX: e.clientX - (offW / 2),
-            posY: e.clientY - (offY / 2),
-            display: 'block',
+        // A cada clique na imagem um objeto é gerado com os dados abaixo relacionados
+        const marcador = {
+            posX: (e.clientX - (offW / 2)) - 41,
+            posY: (e.clientY - (offY / 2)) - 5,
             counter: this.state.numeroCelulasEp + 1,
-            containerWidth: this.container.offsetWidth,
-            containerHeight: this.img.offsetHeight,
-            numeroCelulasEp: this.state.numeroCelulasEp + 1
+            display: 'block',
+            // containerWidth: this.container.offsetWidth,
+            // containerHeight: this.img.offsetHeight,
+        }
+        // Altero o estado do array macadores acrescentando o novo objeto e atualizo o contador.
+        this.setState({
+            counter: this.state.counter + 1,
+            marcadores: [...this.state.marcadores, marcador],
+            // counter: this.state.numeroCelulasEp + 1,
+            numeroCelulasEp: this.state.numeroCelulasEp + 1,
         })
 
-        base.push(uid + '/' + idProjeto + '/dadosContagem', {
-            data: { celulasEp: this.state.counter, 
-                posX: this.state.posX, 
-                posY: this.state.posY, 
-                containerWidth: this.state.containerWidth, 
-                containerHeight: this.state.containerHeight, 
-                numeroCelulasEp: this.state.numeroCelulasEp } } )
+        // base.push(uid + '/' + idProjeto  + '/dadosContagem', {
+        //     data: { celulasEp: this.state.counter, 
+        //         posX: this.state.posX, 
+        //         posY: this.state.posY, 
+        //         containerWidth: this.state.containerWidth, 
+        //         containerHeight: this.state.containerHeight, 
+        //         numeroCelulasEp: this.state.numeroCelulasEp } } )
 
         // this.setState({
         //     numeroCelulasEp: this.state.numeroCelulasEp + 1
         // })
-        this.calcular()
+        this.calcularIndice()
+        //     return( <Pin refValue={ref => this.pin = ref} counter={this.state.counter} posX={`${this.state.posX}px`} posY={`${this.state.posY}px`} display={this.state.display} />
+        // )
         // return (
         //     <Pin X={x} Y={y} />
         // )
+        // return(<Pin refValue={ref => this.pin = ref} posX={`${this.state.posX}px`} posY={`${this.state.posY}px`} display={this.state.display} />)
     }
 
-    calcular() {
+    calcularIndice() {
         var estomatos = this.state.numeroEstomatos
         var celulasep = this.state.numeroCelulasEp
         var soma = estomatos + celulasep
@@ -194,8 +202,8 @@ export default class Contagem extends Component {
             resultado: total
         })
 
-        base.push(uid + '/' + idProjeto + '/dadosContagem', {
-            data: {resultado: this.state.resultado}})
+        // base.push(uid + '/' + idProjeto + '/dadosContagem', {
+        //     data: {resultado: this.state.resultado}})
 
         // base.push(uid +'/'+ idProjeto, {
         //     data: {
@@ -214,10 +222,9 @@ export default class Contagem extends Component {
             densidade: densidade
         })
 
-        base.push(uid + '/' + idProjeto + '/dadosContagem', {
-            data: {densidade: this.state.densidade}})
+        // base.push(uid + '/' + idProjeto + '/dadosContagem', {
+        //     data: {densidade: this.state.densidade}})
     }
-
 
     handleUploadStart = () => this.setState({ isUploading: true, progress: 0 });
     handleProgress = (progress) => this.setState({ progress });
@@ -225,13 +232,14 @@ export default class Contagem extends Component {
         this.setState({ isUploading: false });
         console.error(error);
     }
-    handleUploadSuccess = (filename) => {
-        this.setState({ foto: filename, progress: 100, isUploading: false });
+    handleUploadSuccess = (filename, key) => {
+        this.setState({ foto: filename, progress: 100, isUploading: false, key: key });
         firebaseApp.storage().ref('/imagens').child(filename).getDownloadURL().then(url => this.setState({ fotoURL: url })
 
         );
 
         const foto = this.state.foto
+
         base.push(uid + '/' + idProjeto + '/imagens', {
             data: {
                 foto
@@ -239,36 +247,40 @@ export default class Contagem extends Component {
         })
     };
 
-
     render() {
         return (
             <div>
-                <div className="container-foto" ref={ ref => this.container = ref }>
+                <div className="container-foto" ref={ref => this.container = ref}>
                     {this.state.isUploading &&
                         <progress>{this.state.progress}</progress>
                     }
 
-
                     {this.state.fotoURL &&
                         <img src={this.state.fotoURL}
-                             ref={ ref => this.img = ref }
-                             onClick={this.contagemEstomatos}
-                             onContextMenu={this.contagemEpidermicas}
+                            ref={ref => this.img = ref}
+                            onClick={this.contagemEstomatos}
+                            onContextMenu={this.contagemEpidermicas}
                             style={style.foto}
-                             alt="foto" />
+                            alt="foto" />
                     }
 
-                    {/* {this.state.posX !== -1 && <Pin refValue={ref => this.pin = ref} X={this.state.posX} Y={this.state.posY} />} */}
+                    {/* {this.state.posX !== -1 && <Pin refValue={ref => this.pin = ref} X={this.state.posX} Y={this.state.posY} />}
 
                     <Pin refValue={ref => this.pin = ref} posX={`${this.state.posX}px`} posY={`${this.state.posY}px`} display={this.state.display} />
-                    {this.state.display !== 'none' && <Pin refValue={ref => this.pin = ref} counter={this.state.counter} posX={`${this.state.posX}px`} posY={`${this.state.posY}px`} display={this.state.display} />}
+                    {/* {this.state.display !== 'none' && <Pin refValue={ref => this.pin = ref} counter={this.state.counter} posX={`${this.state.posX}px`} posY={`${this.state.posY}px`} display={this.state.display} />} */} 
 
+                     {/* Percorre o array de objetos dos marcadores e mostro eles na tela. */}
+                    {
+                        Object
+                            .keys(this.state.marcadores)
+                            .map(key => this.mostrarPin(key, this.state.marcadores[key]))
+                    }
 
                     <FileUploader
                         accept="image/*"
                         id="botaoFoto"
                         name="foto"
-                        ref={ ref => this.img = ref }
+                        ref={ref => this.img = ref}
                         randomizeFilename
                         storageRef={firebaseApp.storage().ref('/imagens')}
                         onUploadStart={this.handleUploadStart}
@@ -277,7 +289,6 @@ export default class Contagem extends Component {
                         onProgress={this.handleProgress}
                     />
                 </div>
-
 
                 {/* MODAL */}
                 <div className="modal fade col-md-2 ml-auto" id="dadosContagem" tabIndex="-1" role="dialog" aria-labelledby="dadosContagemLabel" aria-hidden="true">
@@ -296,9 +307,11 @@ export default class Contagem extends Component {
 
                                 <label className="col-form-label" style={{ marginRight: "30px" }}>Índice: {this.state.resultado}</label>
 
-                                <input ref="area" name="area" type="number" style={{ width: "60px", marginRight: "20px" }} />
-                                <button type="button" onClick={this.calcularDensidade}>Calcular</button>
+                                <label className="col-form-label" style={{ marginRight: "5px" }}>Insira a área: </label>
+                                <input ref="area" name="area" type="number" style={{ width: "60px" }} />
+                                <button type="button" className="btn btn-primary" onClick={this.calcularDensidade}>Calcular Densidade</button>
                                 <label className="col-form-label">Densidade: {this.state.densidade}</label>
+                                {/* <button type="button" className="btn btn-primary" onClick={this.salvarDados}>Salvar</button> */}
                             </div>
                         </div>
                     </div>

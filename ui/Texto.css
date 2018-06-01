@@ -13,6 +13,10 @@
     #texto{
         text-align: justify;
     }
+
+    #legenda{
+        font-size: 10px;
+    }
     
     #div-imagem{
         text-align: center;
@@ -44,6 +48,10 @@
         text-align: justify;
     }
     
+    #legenda{
+        font-size: 10px;
+    }
+
     #div-imagem{
         text-align: center;
         margin-top: 10px;
@@ -73,6 +81,10 @@
     #texto{
         text-align: justify;
     }
+
+    #legenda{
+        font-size: 10px;
+    }
     
     #div-imagem{
         text-align: center;
@@ -101,6 +113,10 @@
     #texto{
         text-align: justify;
     }
+
+    #legenda{
+        font-size: 10px;
+    }
     
     #div-imagem{
         text-align: center;
@@ -124,6 +140,10 @@
     
     #texto{
         text-align: justify;
+    }
+
+    #legenda{
+        font-size: 10px;
     }
     
     #div-imagem{
