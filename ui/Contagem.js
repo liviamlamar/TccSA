@@ -56,7 +56,6 @@ export default class Contagem extends Component {
     };
 
     componentDidMount = () => {
-        // window.addEventListener("resize", this.handlePosition)
         firebaseApp.auth().onAuthStateChanged((signedUser) => {
             uid = signedUser.uid
         }
@@ -99,55 +98,18 @@ export default class Contagem extends Component {
             posX: (e.clientX - (offW / 2)) - 41,
             posY: (e.clientY - (offY / 2)) - 5,
             counter: this.state.numeroEstomatos + 1,
-            display: 'block',
-            // containerWidth: this.container.offsetWidth,
-            // containerHeight: this.img.offsetHeight,
+            display: 'block'
         }
 
         // Altero o estado do array macadores acrescentando o novo objeto e atualizo o contador.
         this.setState({
             counter: this.state.counter + 1,
             marcadores: [...this.state.marcadores, marcador],
-            // counter: this.state.numeroEstomatos + 1,
             numeroEstomatos: this.state.numeroEstomatos + 1
         })
 
-        // base.push(uid + '/' + idProjeto  + '/imagens/' + this.state.key + '/dadosContagem', {
-        //     data: { estomato: this.state.counter, 
-        //         posicoes: this.state.posicoesEstomatos,
-        //         numeroEstomatos: this.state.numeroEstomatos } } )
-
-        // this.setState({
-        //     posX: event.pageX,
-        //     posY: event.pageY
-        // })
-
-        // console.log(event.clientX, this.offsetLeft, event.clientY, this.offsetTop)
-
-        // x = x - this.offsetLeft;
-        // y = y - this.offsetTop;
-
-        // alert("x " + x + ", y " + y);
-
-        // var ctx = this.getContext("2d");
-        // ctx.beginPath();
-        // ctx.arc(x, y, 10, 0, 2 * Math.PI);
-        // ctx.stroke();
-
-        // this.setState({
-
-        // })
+        
         this.calcularIndice()
-        //     return( <Pin refValue={ref => this.pin = ref} counter={this.state.counter} posX={`${this.state.posX}px`} posY={`${this.state.posY}px`} display={this.state.display} />
-        // )
-        // return(
-        //     <Test letra="E" style={{x:x, y:y, color:"black", fontSize:"14px"}}/>
-        // ) 
-
-        // return(
-        //     <Pin X = {x} Y={y}/>
-        // )
-        // return(<Pin refValue={ref => this.pin = ref} posX={`${this.state.posX}px`} posY={`${this.state.posY}px`} display={this.state.display} />)
     }
 
     contagemEpidermicas = (e) => {
@@ -160,36 +122,18 @@ export default class Contagem extends Component {
             posX: (e.clientX - (offW / 2)) - 41,
             posY: (e.clientY - (offY / 2)) - 5,
             counter: this.state.numeroCelulasEp + 1,
-            display: 'block',
-            // containerWidth: this.container.offsetWidth,
-            // containerHeight: this.img.offsetHeight,
+            display: 'block'
         }
+
         // Altero o estado do array macadores acrescentando o novo objeto e atualizo o contador.
         this.setState({
             counter: this.state.counter + 1,
             marcadores: [...this.state.marcadores, marcador],
-            // counter: this.state.numeroCelulasEp + 1,
-            numeroCelulasEp: this.state.numeroCelulasEp + 1,
+            numeroCelulasEp: this.state.numeroCelulasEp + 1
         })
 
-        // base.push(uid + '/' + idProjeto  + '/dadosContagem', {
-        //     data: { celulasEp: this.state.counter, 
-        //         posX: this.state.posX, 
-        //         posY: this.state.posY, 
-        //         containerWidth: this.state.containerWidth, 
-        //         containerHeight: this.state.containerHeight, 
-        //         numeroCelulasEp: this.state.numeroCelulasEp } } )
-
-        // this.setState({
-        //     numeroCelulasEp: this.state.numeroCelulasEp + 1
-        // })
+        
         this.calcularIndice()
-        //     return( <Pin refValue={ref => this.pin = ref} counter={this.state.counter} posX={`${this.state.posX}px`} posY={`${this.state.posY}px`} display={this.state.display} />
-        // )
-        // return (
-        //     <Pin X={x} Y={y} />
-        // )
-        // return(<Pin refValue={ref => this.pin = ref} posX={`${this.state.posX}px`} posY={`${this.state.posY}px`} display={this.state.display} />)
     }
 
     calcularIndice() {
@@ -201,17 +145,6 @@ export default class Contagem extends Component {
         this.setState({
             resultado: total
         })
-
-        // base.push(uid + '/' + idProjeto + '/dadosContagem', {
-        //     data: {resultado: this.state.resultado}})
-
-        // base.push(uid +'/'+ idProjeto, {
-        //     data: {
-        //         estomatos,
-        //         celulasep,
-        //         total
-        //     }
-        // })
     }
 
     calcularDensidade() {
@@ -221,9 +154,6 @@ export default class Contagem extends Component {
         this.setState({
             densidade: densidade
         })
-
-        // base.push(uid + '/' + idProjeto + '/dadosContagem', {
-        //     data: {densidade: this.state.densidade}})
     }
 
     handleUploadStart = () => this.setState({ isUploading: true, progress: 0 });
@@ -264,10 +194,6 @@ export default class Contagem extends Component {
                             alt="foto" />
                     }
 
-                    {/* {this.state.posX !== -1 && <Pin refValue={ref => this.pin = ref} X={this.state.posX} Y={this.state.posY} />}
-
-                    <Pin refValue={ref => this.pin = ref} posX={`${this.state.posX}px`} posY={`${this.state.posY}px`} display={this.state.display} />
-                    {/* {this.state.display !== 'none' && <Pin refValue={ref => this.pin = ref} counter={this.state.counter} posX={`${this.state.posX}px`} posY={`${this.state.posY}px`} display={this.state.display} />} */} 
 
                      {/* Percorre o array de objetos dos marcadores e mostro eles na tela. */}
                     {
@@ -275,6 +201,7 @@ export default class Contagem extends Component {
                             .keys(this.state.marcadores)
                             .map(key => this.mostrarPin(key, this.state.marcadores[key]))
                     }
+
 
                     <FileUploader
                         accept="image/*"

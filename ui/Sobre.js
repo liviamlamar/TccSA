@@ -5,8 +5,6 @@ import criarProjeto2 from '../imgs/passo2.png'
 import visualizarProjeto from '../imgs/passo3.png'
 import editarProjeto from '../imgs/passo4.png'
 import excluirProjeto from '../imgs/passo5.png'
-// import pagSobre1 from '../imgs/passo6.png'
-// import pagEstomatos1 from '../imgs/passo7.png'
 import mostrarDados from '../imgs/mostrardados.png'
 import modal from '../imgs/modal.png'
 
@@ -33,16 +31,9 @@ export default class Sobre extends Component {
                     <img id="imagem" src={criarProjeto1} alt="figura1" style={style.imagem}></img>
                     <img id="imagem" src={criarProjeto2} alt="figura2" style={style.imagem}></img>
                     <p>Após a criação, é possível visualizar, editar e excluir um projeto.</p>
-                    {/* <h2 id="sub-title">Visualização do projeto:</h2> */}
                     <img id="imagem" src={visualizarProjeto} alt="figura3" style={style.menor}></img>
-                    {/* <h2 id="sub-title">Editar projeto:</h2> */}
                     <img id="imagem" src={editarProjeto} alt="figura4" style={style.menor}></img>
-                    {/* <h2 id="sub-title">Excluir projeto:</h2> */}
                     <img id="imagem" src={excluirProjeto} alt="figura5" style={style.menor}></img>
-                    {/* <h2 id="sub-title">Ir para página Sobre:</h2>
-                    <img id="imagem" src={pagSobre1} alt="figura1" style={style.imagem}></img>
-                    <h2 id="sub-title">Ir para página Estômatos:</h2>
-                    <img id="imagem" src={pagEstomatos1} alt="figura1" style={style.imagem}></img> */}
                     <h2 id="sub-title">Como realizar contagens:</h2>
                     <p>Para contar estômatos: clique com o lado esquerdo do mouse.</p>
                     <p>Para contar células epidérmicas: clique com o lado direito do mouse.</p>
