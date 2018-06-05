@@ -15,9 +15,9 @@ const Table = (props) => {
             <tr>
               <th>NE</th>
               <th>CE</th>
-              <th>Índice Estomático</th>
-              <th>Área</th>
-              <th>Densidade Estomática</th>
+              <th>IE</th>
+              <th>A</th>
+              <th>DE</th>
             </tr>
           </thead>
 

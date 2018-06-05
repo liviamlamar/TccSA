@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import FileUploader from 'react-firebase-file-uploader'
-import ExcellentExport from 'excellentexport'
+// import ExcellentExport from 'excellentexport'
 // import firebase from 'firebase'
 import { firebaseApp, base } from '../firebase/Firebase'
 import { idProjeto } from '../ui/Projetos'
 import Pin from '../components/Pin'
 import './Contagem.css'
 import Table from '../components/Table'
+import Papa from 'papaparse'
 
 const style = {
     foto: {
@@ -218,14 +219,21 @@ export default class Contagem extends Component {
             area={this.refs.area.value}
             densidade={this.state.densidade} />
 
+
+        tabela = JSON.stringify(tabela.props)
+        var csv = Papa.unparse(tabela)
+        // window.open('data:application/vnd.ms-excel,' + encodeURIComponent(csv));  
+
+
+        console.log(csv)
+
+
         // var blob = new Blob([tabela], { type: "text/plain;charset=utf-8" });
         // blob.saveAs(blob, "filename.txt");
 
 
         // tabela.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(VALUE));
         // tabela.setAttribute('download', 'filename.csv');
-
-        window.open('data:application/vnd.ms-excel,' + encodeURIComponent(tabela));  
 
 
         // var name = "Dados"

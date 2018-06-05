@@ -142,11 +142,11 @@ export default class Projetos extends Component {
                                 <form>
                                     <div className="form-group">
                                         <label htmlFor="nome" className="col-form-label">Nome:</label>
-                                        <input ref={ref => this.nome = ref} type="text" className="form-control" id="nome" required={true} />
+                                        <input ref={ref => this.nome = ref} type="text" className="form-control" id="nome" required="required" />
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="descricao" className="col-form-label">Descrição:</label>
-                                        <textarea ref={ref => this.descricao = ref} className="form-control" id="descricao" required={true}></textarea>
+                                        <textarea ref={ref => this.descricao = ref} className="form-control" id="descricao" required="required"></textarea>
                                     </div>
                                 </form>
                             </div>

@@ -23,5 +23,4 @@ const addCadastro = (pasta, objeto) => {
 
 const storage = firebase.storage().ref();
 
-
 export { firebaseApp, addCadastro, base, storage, ref };

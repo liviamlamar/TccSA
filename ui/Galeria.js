@@ -35,9 +35,9 @@ export default class Galeria extends Component {
     }
 
     listItem(key, fotos) {
-        console.log(fotos.foto)
+        console.log(fotos.filename)
         var url;
-        storage.child(`imagens/${fotos.foto}`).putString(`data_url`).then((snapshot) => {
+        storage.child(`imagens/${fotos.filename}`).putString(`data_url`).then((snapshot) => {
             console.log('Uploaded a data_url string!');
             url = snapshot.downloadURL;
             console.log(url)
