@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import FileUploader from 'react-firebase-file-uploader'
+import ExcellentExport from 'excellentexport'
 // import firebase from 'firebase'
 import { firebaseApp, base } from '../firebase/Firebase'
 import { idProjeto } from '../ui/Projetos'
 import Pin from '../components/Pin'
 import './Contagem.css'
+import Table from '../components/Table'
 
 const style = {
     foto: {
@@ -38,7 +40,8 @@ export default class Contagem extends Component {
             numeroEstomatos: 0,
             numeroCelulasEp: 0,
             resultado: 0,
-            densidade: 0
+            densidade: 0,
+            fotos: {}
         }
 
         this.contagemEstomatos = this.contagemEstomatos.bind(this)
@@ -46,6 +49,8 @@ export default class Contagem extends Component {
         this.calcularIndice = this.calcularIndice.bind(this)
         this.calcularDensidade = this.calcularDensidade.bind(this)
         this.handlePosition = this.handlePosition.bind(this)
+        this.salvarDados = this.salvarDados.bind(this)
+        this.tableToExcel = this.tableToExcel.bind(this)
     }
 
     state = {
@@ -58,6 +63,13 @@ export default class Contagem extends Component {
     componentDidMount = () => {
         firebaseApp.auth().onAuthStateChanged((signedUser) => {
             uid = signedUser.uid
+            var uidString = String(uid)
+            var keyString = String(idProjeto)
+            base.syncState(uidString + '/' + keyString + '/imagens', {
+                context: this,
+                state: 'fotos',
+                asArray: true
+            })
         }
         )
     }
@@ -76,16 +88,16 @@ export default class Contagem extends Component {
         })
     }
 
-    mostrarPin = ( key_marcador ) => {
+    mostrarPin = (key_marcador) => {
         return (
-          <Pin 
-            refValue={ ref => this.pin = ref } 
-            counter={ this.state.marcadores[key_marcador].counter } 
-            posX={`${ this.state.marcadores[key_marcador].posX }px`} 
-            posY={`${ this.state.marcadores[key_marcador].posY }px`} 
-            display={ this.state.marcadores[key_marcador].display } />
+            <Pin
+                refValue={ref => this.pin = ref}
+                counter={this.state.marcadores[key_marcador].counter}
+                posX={`${this.state.marcadores[key_marcador].posX}px`}
+                posY={`${this.state.marcadores[key_marcador].posY}px`}
+                display={this.state.marcadores[key_marcador].display} />
         )
-      }
+    }
 
     contagemEstomatos = (e) => {
         e.preventDefault();
@@ -108,7 +120,7 @@ export default class Contagem extends Component {
             numeroEstomatos: this.state.numeroEstomatos + 1
         })
 
-        
+
         this.calcularIndice()
     }
 
@@ -132,7 +144,7 @@ export default class Contagem extends Component {
             numeroCelulasEp: this.state.numeroCelulasEp + 1
         })
 
-        
+
         this.calcularIndice()
     }
 
@@ -162,20 +174,85 @@ export default class Contagem extends Component {
         this.setState({ isUploading: false });
         console.error(error);
     }
-    handleUploadSuccess = (filename, key) => {
-        this.setState({ foto: filename, progress: 100, isUploading: false, key: key });
+    handleUploadSuccess = (filename) => {
+        this.setState({ foto: filename, progress: 100, isUploading: false });
         firebaseApp.storage().ref('/imagens').child(filename).getDownloadURL().then(url => this.setState({ fotoURL: url })
 
         );
 
         const foto = this.state.foto
 
-        base.push(uid + '/' + idProjeto + '/imagens', {
+
+        base.push(uid + '/' + idProjeto + '/imagens/', {
             data: {
-                foto
+                filename: foto
             }
         })
     };
+
+    salvarDados() {
+        // var imgKey = firebase.database().ref(uid + '/' + idProjeto + '/imagens/').child(this.state.foto).key;
+        // console.log(imgKey)
+        // var keyImg
+        // {
+        //     Object
+        //         .keys(this.state.fotos)
+        //         .map(key, this.state.fotos[key])
+        // }
+        base.push(uid + '/' + idProjeto + '/dadosContagem/', {
+            data: {
+                filename: this.state.foto,
+                marcadores: this.state.marcadores,
+                numeroEstomatos: this.state.numeroEstomatos,
+                numeroCelulasEp: this.state.numeroCelulasEp,
+                resultado: this.state.resultado,
+                densidade: this.state.densidade
+            }
+        })
+    }
+
+    tableToExcel() {
+        var tabela = <Table ne={this.state.numeroEstomatos}
+            ce={this.state.numeroCelulasEp}
+            indice={this.state.resultado}
+            area={this.refs.area.value}
+            densidade={this.state.densidade} />
+
+        // var blob = new Blob([tabela], { type: "text/plain;charset=utf-8" });
+        // blob.saveAs(blob, "filename.txt");
+
+
+        // tabela.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(VALUE));
+        // tabela.setAttribute('download', 'filename.csv');
+
+        window.open('data:application/vnd.ms-excel,' + encodeURIComponent(tabela));  
+
+
+        // var name = "Dados"
+        // var uri = 'data:application/vnd.ms-excel;base64,'
+        //     , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+        //     , base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))) }
+        //     , format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }) }
+        // return function (tabela, name) {
+        //     if (!tabela.nodeType) tabela = tabela
+        //     var ctx = { worksheet: name || 'Worksheet', tabela: tabela.innerHTML }
+        //     window.location.href = uri + base64(format(template, ctx))
+        // }
+    }
+
+    // ExcellentExport.excel(this, 'tabela', 'Dados');
+
+    // var uri = 'data:application/vnd.ms-excel;base64,'
+    //   , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+    //   , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+    //   , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+    // return function(table, name) {
+    //   if (!table.nodeType) table = document.getElementById(table)
+    //   var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
+    //   window.location.href = uri + base64(format(template, ctx))
+    // }
+
+
 
     render() {
         return (
@@ -195,12 +272,13 @@ export default class Contagem extends Component {
                     }
 
 
-                     {/* Percorre o array de objetos dos marcadores e mostro eles na tela. */}
+                    {/* Percorre o array de objetos dos marcadores e mostro eles na tela. */}
                     {
                         Object
                             .keys(this.state.marcadores)
                             .map(key => this.mostrarPin(key, this.state.marcadores[key]))
                     }
+
 
 
                     <FileUploader
@@ -236,9 +314,10 @@ export default class Contagem extends Component {
 
                                 <label className="col-form-label" style={{ marginRight: "5px" }}>Insira a área: </label>
                                 <input ref="area" name="area" type="number" style={{ width: "60px" }} />
-                                <button type="button" className="btn btn-primary" onClick={this.calcularDensidade}>Calcular Densidade</button>
+                                <button type="button" className="btn btn-outline-secondary" style={{ marginTop: "10px", display: "flex", marginLeft: "auto", marginRight: "auto" }} onClick={this.calcularDensidade}>Calcular Densidade</button>
                                 <label className="col-form-label">Densidade: {this.state.densidade}</label>
-                                {/* <button type="button" className="btn btn-primary" onClick={this.salvarDados}>Salvar</button> */}
+                                <button type="button" className="btn btn-success" style={{ marginTop: "5px", display: "flex", marginLeft: "auto", marginRight: "auto" }} onClick={this.salvarDados}>Salvar Dados</button>
+                                <button type="button" className="btn btn-success" style={{ marginTop: "5px", display: "flex", marginLeft: "auto", marginRight: "auto" }} onClick={this.tableToExcel}>Exportar</button>
                             </div>
                         </div>
                     </div>
