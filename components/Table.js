@@ -4,7 +4,7 @@ const Table = (props) => {
 
     return (
         <div>
-            <table id="tabela">
+            <table id={props.id}>
           <thead>
             <tr id="cabeca-tabela">
               <th colspan="5">Dados Contagem</th>
@@ -30,14 +30,9 @@ const Table = (props) => {
               <td id="densidade">{props.densidade}</td>
             </tr>
           </tfoot>	
-
-          <tbody>
-
-          </tbody>
         </table>
         </div>
     )
-
 }
 
 export default Table

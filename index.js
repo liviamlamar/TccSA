@@ -26,7 +26,7 @@ firebaseApp.auth().onAuthStateChanged((signedUser)=> {
     console.log('Email is not verified');
     var user = firebaseApp.auth().currentUser;
     user.sendEmailVerification().then(function () {
-      alert("E-mail de verificação enviado!")
+      console.log("E-mail de verificação enviado!")
     }).catch(function (error) {
       console.log("email nao enviado")
     }); 

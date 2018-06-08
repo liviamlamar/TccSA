@@ -7,7 +7,10 @@ import { idProjeto } from '../ui/Projetos'
 import Pin from '../components/Pin'
 import './Contagem.css'
 import Table from '../components/Table'
-import Papa from 'papaparse'
+// import Papa from 'papaparse'
+// import ExcellentExport from 'excellentexport'
+// import TableExport from 'tableexport'
+// import { excelExportJs } from 'excelExportJs';
 
 const style = {
     foto: {
@@ -42,7 +45,9 @@ export default class Contagem extends Component {
             numeroCelulasEp: 0,
             resultado: 0,
             densidade: 0,
-            fotos: {}
+            fotos: {},
+            border:[],
+            color:[]
         }
 
         this.contagemEstomatos = this.contagemEstomatos.bind(this)
@@ -52,6 +57,7 @@ export default class Contagem extends Component {
         this.handlePosition = this.handlePosition.bind(this)
         this.salvarDados = this.salvarDados.bind(this)
         this.tableToExcel = this.tableToExcel.bind(this)
+        this.apagarPin = this.apagarPin.bind(this)
     }
 
     state = {
@@ -90,13 +96,17 @@ export default class Contagem extends Component {
     }
 
     mostrarPin = (key_marcador) => {
+        console.log(key_marcador)
         return (
             <Pin
                 refValue={ref => this.pin = ref}
+                border={this.state.border[key_marcador]}
+                color={this.state.color[key_marcador]}
                 counter={this.state.marcadores[key_marcador].counter}
                 posX={`${this.state.marcadores[key_marcador].posX}px`}
                 posY={`${this.state.marcadores[key_marcador].posY}px`}
-                display={this.state.marcadores[key_marcador].display} />
+                display={this.state.marcadores[key_marcador].display}
+                funcao={() => this.apagarPin(key_marcador)} />
         )
     }
 
@@ -118,7 +128,9 @@ export default class Contagem extends Component {
         this.setState({
             counter: this.state.counter + 1,
             marcadores: [...this.state.marcadores, marcador],
-            numeroEstomatos: this.state.numeroEstomatos + 1
+            numeroEstomatos: this.state.numeroEstomatos + 1,
+            border: [...this.state.border, '3px solid #fc026a'],
+            color: [...this.state.color, '#fc026a']
         })
 
 
@@ -142,7 +154,9 @@ export default class Contagem extends Component {
         this.setState({
             counter: this.state.counter + 1,
             marcadores: [...this.state.marcadores, marcador],
-            numeroCelulasEp: this.state.numeroCelulasEp + 1
+            numeroCelulasEp: this.state.numeroCelulasEp + 1,
+            border: [...this.state.border, '3px solid #000000'],
+            color: [...this.state.color, '#000000']
         })
 
 
@@ -212,21 +226,123 @@ export default class Contagem extends Component {
         })
     }
 
+    // tableToExcel(context) {
+    //     var sheet = context.workbook.worksheets.getItem("Sample");
+    //     var expensesTable = sheet.tables.add("A1:E1", true /*hasHeaders*/);
+    //     expensesTable.name = "Dados da Contagem";
+    
+    //     expensesTable.getHeaderRowRange().values = [["NE", "CE", "IE", "A", "DE"]];
+    
+    //     expensesTable.rows.add(null /*add rows to the end of the table*/, [
+    //         [this.state.numeroEstomatos, this.state.numeroCelulasEp, this.state.resultado, this.refs.area.value, this.state.densidade]
+    //     ]);
+
+    //     if (Office.context.requirements.isSetSupported("ExcelApi", 1.2)) {
+    //         sheet.getUsedRange().format.autofitColumns();
+    //         sheet.getUsedRange().format.autofitRows();
+    //     }
+    
+    //     sheet.activate();
+    
+    //     return context.sync();
+    // }
+
     tableToExcel() {
-        var tabela = <Table ne={this.state.numeroEstomatos}
-            ce={this.state.numeroCelulasEp}
-            indice={this.state.resultado}
-            area={this.refs.area.value}
-            densidade={this.state.densidade} />
+        var tabela = <table id="datatable">
+        <thead>
+          <tr id="cabeca-tabela">
+            <th colspan="5">Dados Contagem</th>
+          </tr>
+        </thead>
+
+        <thead>
+          <tr>
+            <th>NE</th>
+            <th>CE</th>
+            <th>IE</th>
+            <th>A</th>
+            <th>DE</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td id="ne">{this.state.numeroEstomatos}</td>
+            <td id="ce">{this.state.numeroCelulasEp}</td>
+            <td id="indice">{this.state.resultado}</td>
+            <td id="area">{this.refs.area.value}</td>
+            <td id="densidade">{this.state.densidade}</td>
+          </tr>
+        </tbody>	
+      </table>
+        
+
+        window.open('data:application/vnd.ms-excel,' + encodeURIComponent(tabela))
 
 
-        tabela = JSON.stringify(tabela.props)
-        var csv = Papa.unparse(tabela)
-        // window.open('data:application/vnd.ms-excel,' + encodeURIComponent(csv));  
+        // var tab_text="<table border='2px'><tr bgcolor='#87AFC6' style='height: 75px; text-align: center; width: 250px'>";
+        // var textRange; var j=0;
+        // var tab = tabela; // id of table
+        // for(j = 0 ; j < tab.rows.length ; j++)
+        // {
+        //     tab_text=tab_text;
+        //     tab_text=tab_text+tab.rows[j].innerHTML.toUpperCase()+"</tr>";
+        //     //tab_text=tab_text+"</tr>";
+        // }
+        // tab_text= tab_text+"</table>";
+        
+        // var ua = window.navigator.userAgent;
+        // var msie = ua.indexOf("MSIE ");
+        // var sa = window.open('data:application/vnd.ms-excel,' + encodeURIComponent(tab_text));
+        
+        
+        // return (sa);
+
+    }
+        
+        // var downloadLink
+        // var dataType = 'applicaiton/vmd.ms-excel'
+        // var tableSelect = tabela
+        // var tableHTML = tableSelect.outerHTML.replace("/ /g", '%20');
+        // downloadLink = document.createElement("a")
+        // document.body.appendChild(downloadLink)
+        // var filename = "download"
+        // if(navigator.msSaveOrOpenBlob){
+        //     var blob = new Blob(['\ufeff', tableHTML], {
+        //         type: dataType
+        //     })
+        //     navigator.msSaveOrOpenBlob(blob, filename)
+        // } else {
+        //     downloadLink.href = 'data:' + dataType + ', ' + tableHTML
+
+        //     downloadLink.download = filename
+
+        //     downloadLink.click()
+        // }
+        // }
+        // <Table id={"datatable"}
+        //                     ne={this.state.numeroEstomatos}
+        //                     ce={this.state.numeroCelulasEp}
+        //                     indice={this.state.resultado}
+        //                     area={this.refs.area.value}
+        //                     densidade={this.state.densidade} />
+
+        // tabela.convertToRange()
+
+        // const dados = [this.state.numeroEstomatos, this.state.numeroCelulasEp, this.state.resultado, this.refs.area.value, this.state.densidade]
+        // tabela = JSON.stringify(tabela.props)
+        // // var csv = Papa.unparse(tabela)
+        // window.open('data:application/vnd.ms-excel,' + encodeURIComponent(this.state.numeroEstomatos) + encodeURIComponent(this.state.numeroCelulasEp) + encodeURIComponent(this.state.resultado) + encodeURIComponent(this.refs.area.value) + encodeURIComponent(this.state.densidade))
+
+        // ExcellentExport.excel(this, "datatable", 'Dados')
+
+        //  var table = TableExport(tabela)
+        //  var exportData = table.getExportData()
 
 
-        console.log(csv)
 
+        // console.log(csv)
+    
 
         // var blob = new Blob([tabela], { type: "text/plain;charset=utf-8" });
         // blob.saveAs(blob, "filename.txt");
@@ -246,7 +362,7 @@ export default class Contagem extends Component {
         //     var ctx = { worksheet: name || 'Worksheet', tabela: tabela.innerHTML }
         //     window.location.href = uri + base64(format(template, ctx))
         // }
-    }
+
 
     // ExcellentExport.excel(this, 'tabela', 'Dados');
 
@@ -260,7 +376,10 @@ export default class Contagem extends Component {
     //   window.location.href = uri + base64(format(template, ctx))
     // }
 
-
+    apagarPin(key){
+        console.log("Aqui", this.state.marcadores[key])
+        // this.state.marcadores[key].remove();
+    }
 
     render() {
         return (
